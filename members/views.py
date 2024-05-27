@@ -1,20 +1,13 @@
 from django.template import loader
 from django.http import HttpResponse
 from datetime import datetime
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
 
-# Create your views here.
+class MembersView(TemplateView):
+    template_name = 'myfirst.html'
+    extra_context = {'today': datetime.today()}
 
-def members(request):
-    template = loader.get_template('myfirst.html')
-    context = {
-        'date': datetime.today()
-    }
-    return HttpResponse(template.render(context, request))
-
-@login_required(login_url='/admin')
-
-def authorized(request):
-    tem = loader.get_template('authorized.html')
-    cont = {}
-    return HttpResponse(tem.render(cont, request))
+class AutorizedView(LoginRequiredMixin, TemplateView):
+    template_name = 'authorized.html'
+    login_url = '/admin'
